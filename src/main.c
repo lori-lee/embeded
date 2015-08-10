@@ -24,8 +24,16 @@ void run (void)
         idle_cpu (); 
     }
 }
+
+#define WDT_RST 0xAA
+#define PWT_RST 0xBB
+unsigned char xdata reset_type = PWT_RST;
 void main (void)
 {
-    init ();
+    if (WDT_RST != reset_type) {
+        init ();
+        reset_type = PWT_RST;
+    } else reset_type = WDT_RST;
+
     run ();
 }

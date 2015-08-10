@@ -9,7 +9,5 @@
 typedef struct _interruptH {
 }INTH;
 
-void check_do (void)
-{
-}
+void check_do (void);
 #endif

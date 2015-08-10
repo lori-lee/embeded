@@ -1,4 +1,4 @@
-#if !defined __LTIMER_H__
-#define __LTIMER_H__
+#if !defined __TIMER_H__
+#define __TIMER_H__
 void init_timer (void);
 #endif
