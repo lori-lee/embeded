@@ -32,8 +32,7 @@ void main (void)
 {
     if (WDT_RST != reset_type) {
         init ();
-        reset_type = PWT_RST;
-    } else reset_type = WDT_RST;
+    }
 
     run ();
 }
