@@ -8,6 +8,8 @@ typedef struct _sys_status {
     bit bdata bcontrol;//
     //
     bit bdata second_flag;//1 second ?
+    bit bdata manual_save_flag;//SAVE from Remote control?
+
     unsigned char data int_source;//0x1 --timer0, 0x2 --light intensity sensor, 0x4 -- remoate control
     unsigned int data l_sensor;//the value of light intensity
     unsigned int data remote_control;//
@@ -24,6 +26,7 @@ volatile sys_status data g_sysstatus;
 #define mark_l_sensor_status(value)         g_sysstatus.l_sensor   = value
 #define mark_remote_control_status(value)   g_sysstatus.remote_control = value
 #define mark_second_flag_status(value)      g_sysstatus.second_flag    = value
+#define mark_manual_save_flag_status(value) g_sysstatus.manual_save_flag = value
 #define mark_secs_elapsed(value)            g_sysstatus.secs_elapsed   = value
 
 #define mark_status(member,value)   mark_##member##_status (value)
@@ -37,6 +40,8 @@ volatile sys_status data g_sysstatus;
 #define get_remote_control_status()   g_sysstatus.remote_control
 #define get_secs_elapsed()            g_sysstatus.secs_elapsed
 #define get_status(member) get_##member##_status ()
+
+#define need_save_config() get_status (manual_save_flag)
 
 typedef struct _sys_config {
     unsigned int light_threshold;//min light intensity

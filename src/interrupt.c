@@ -1,5 +1,6 @@
 #include "config.h"
 #include "bulb.h"
+#include "eprom.h"
 
 extern sys_status g_sysstatus;
 void update_sys_status ()
@@ -37,6 +38,7 @@ void check_do (void)
     } else {//manual mode
         if (need_save_config ()) {
             save_sys_config ();
+            mark_status (manual_save_flag, 0);
         }
         if (should_switch2auto ()) {//timeout in manual mode ?
             switch2auto ();
