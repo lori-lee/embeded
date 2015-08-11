@@ -1,17 +1,21 @@
+extern sys_status data g_sysstatus;
+extern sys_config data g_sysconfig;
 void timer0_ISR (void) interrupt 1 using 0
 {
     static unsigned char data counter = 0x14;
-    disable_int ();
+    //disable_int ();
+    stop_timer (0);
     reload_timer (TIMER_50MS);
-    enable_int ();
+    run_timer (0);
+    //enable_int ();
     //
     init_wdt ();//reset watch dog
     --counter;
     if (!counter) {//1 second elapsed ?
         counter = 0x14;
-        if (get_status (mode)) {
-            if (get_status (l_sensor) > get_config (light_threshold)) {
-                mark_status (secs_elapsed) = get_status (secs_elapsed) - 1;
+        if (is_automode ()) {
+            if (is_night ()) {
+                mark_status (secs_elapsed, get_status (secs_elapsed) - 1);
                 return ;
             }
         }

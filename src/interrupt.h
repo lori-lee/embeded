@@ -1,6 +1,25 @@
 #if !defined __INTERRUPT_H__
 #define __INTERRUPT_H__
-
+/**
+ * Interruption vector layout
+ * +----------------------------------+-----------+
+ * | IE enable bit index | INT Source |  Address  |
+ * +---------------------+------------+-----------+
+ * |          0          | External 0 |  0x0003   |
+ * +---------------------+------------+-----------+
+ * |          1          |   Timer0   |  0x000B   |
+ * +---------------------+------------+-----------+
+ * |          2          | External 1 |  0x0013   |
+ * +---------------------+------------+-----------+
+ * |          3          |   Timer1   |  0x001B   |
+ * +---------------------+------------+-----------+
+ * |          4          | Serial INT |  0x0023   |
+ * +---------------------+------------+-----------+
+ * |          5          |   Timer 2  |  0x002B   |
+ * +----------------------------------+-----------+
+ *
+ *
+ **/
 /**
  * PSW (Processor Status Word) Register, Bit addressable
  * +-----------------------------------------+
@@ -9,8 +28,8 @@
  * CY -- Carry flag
  * AC -- Assistant carry flag
  * F0 -- General Flag
- * RS1-- Registers group bit 1
- * RS0-- Registers group bit 0
+ * RS1-- Registers Set (Group) bit 1
+ * RS0-- Registers Set (Group) bit 0
  * OV -- Overflow bit
  * USR-- User defined bit
  * P  -- Parity check bit
@@ -31,7 +50,7 @@
  *
  **/
 #define disable_int() EA = 0
-#define enable_int() EA = 1
+#define enable_int()  EA = 1
 /**
  *  PCON (Power Control) Register (Non-bit addressable)
  *  +--------------------------------------------+
@@ -60,52 +79,38 @@
  *
  **/
 #define init_int_levels() IP |= 0x12
-/**
- * TCON (Timer Control) Register, bit addressable
- * +-----------------------------------------------+
- * | TF1 | TR1 | TF0 | TR0 | IE1 | IT1 | IE0 | IT0 |
- * +-----+-----+-----+-----+-----+-----+-----+-----+
- * |  -  |  0  |  -  |  1  |  -  |  1  |  -  |  1  |
- * +-----------------------------------------------+
- * TF1  -- Timer 1 overflow interruption flag, reset by CPU(software)
- * TR1  -- Timer 1 Running flag, timer 1 start working if set
- * TF0  -- Similar to TF1
- * TR0  -- Similar to TR1
- * IE1  -- Interruption external 1, will be set if interruption occurs,
- *         and reset automatically by hardware
- * IT1  -- Interruption external 1 trigger style control bit, triggered when
- *         voltage hops if set, else triggered when low voltage detected.  
- * IE0  -- Similar to IE1
- * IT0  -- Similar to IT1
- *
- **/
-#define run_timer(index)   TR##index = 1
-#define stop_timer(index)  TR##index = 0
-#define clear_timer(index) TF##index = 0
 
 /**
- * TMOD (Timer mode) Register, Non-bit addressable
- * +---------------------------------------------+
- * | GATE | C/T | M1 | M0 | GATE | C/T | M1 | M0 |
- * +------+-----+----+----+------+-----+----+----+
- * |      Timer 1         |      Timer 0         |
- * +---------------------------------------------+
- * GATE   -- if set, Timer 1 works only if TR1=1 and INT=1
- *           else, works if TR1 = 1   
- * C/T    -- Counter/Timer, C/T = 1, works as counter
- *           else works as timer
- * M1     -- Mode bit 1
- * M0     -- Mode bit 0
- * M1 M0
- * 0  0   13 bit, when counter == 0, interruption occurs
- * 0  1   16 bit, when counter == 0, interruption occurs
- * 1  0   auto reload, lower 8 bits -- counter (TL0/TL1)
- *                     higher 8 bits-- reload value (TH0/TH1)
- * 1  1   timer0 works as 2 timers, (TH0/TL0).
+ * 0x00 ~ 0x1F: 4 banks general registers (R0 ~ R7)
+ * 0x20 ~ 0x2F: 16 Bytes (128 Bits) bit addressable memory
+ *
+ * SP default to 0x07 when power on
+ * change to 0x30
  *
  **/
-//Only use timer0 to work as timer
-#define init_timer() TMOD &= 0x01
+#define init_stack() SP = 0x30
+
+/**
+ * UART
+ * SCON (Serial Port Control) Register, bit addressable
+ * +---------------------------------------------+
+ * | SM0 | SM1 | SM2 | REN | TB8 | RB8 | TI | RI |
+ * +---------------------------------------------+
+ * SM0  -- Serial Mode bit 0
+ * SM1  -- Serial Mode bit 1
+ * SM2  -- Multi-machine comunication enable bit.
+ *         0  if Mode == 0
+ *         1  if mode == 1 and stop bit received
+ *         1  if mode == 2 or 3, and the 9th bit received is 1
+ * REN  -- Serical receive enable bit
+ * TB8  -- the 9th bit to be sent when mode == 2 or 3
+ * RB8  -- no meaning when mode == 0
+ *         the stop bit received when mode == 1 
+ *         the 9th bit received when mode == 2 or 3
+ * TI   -- Serial Transmit Interruption flag bit, reset by CPU (software)
+ * RI   -- Receive Interruption flag bit, reset by CPU (software)
+ *
+ **/
 
 void check_do (void);
 #endif

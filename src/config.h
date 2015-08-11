@@ -12,17 +12,54 @@ typedef struct _sys_status {
     unsigned int secs_elapsed;//seconds elapsed in manual mode
 }sys_status;
 //
-sys_status data g_systatus;
-#define mark_status(member,value) g_systatus.##member=value
-#define get_status(member) g_systatus.##member
+sys_status data g_sysstatus;
+#define mark_mode_status(value)             g_sysstatus.mode    = value
+#define mark_e_relay_status(value)          g_sysstatus.e_relay = value
+#define mark_h_sensor_status(value)         g_sysstatus.h_sensor= value
+#define mark_wdt_status(value)              g_sysstatus.wdt     = value
+#define mark_int_source_status(value)       g_sysstatus.int_source = value
+#define mark_l_sensor_status(value)         g_sysstatus.l_sensor   = value
+#define mark_remote_control_status(value)   g_sysstatus.remote_control = value
+#define mark_secs_elapsed(value)            g_sysstatus.secs_elapsed   = value
+
+#define mark_status(member,value)   mark_##member##_status (value)
+
+#define get_mode_status()             g_sysstatus.mode
+#define get_e_relay_status()          g_sysstatus.e_relay
+#define get_h_sensor_status()         g_sysstatus.h_sensor
+#define get_wdt_status()              g_sysstatus.wdt
+#define get_int_source_status()       g_sysstatus.int_source
+#define get_l_sensor_status()         g_sysstatus.l_sensor
+#define get_remote_control_status()   g_sysstatus.remote_control
+#define get_secs_elapsed()            g_sysstatus.secs_elapsed
+#define get_status(member) get_##member##_status ()
 
 typedef struct _sys_config {
     unsigned int light_threshold;//min light intensity
     unsigned int m2a_mode_threshold;//timeout (seconds) before switch manual mode to auto-mode
 }sys_config;
 //
-sys_config data g_sys_config;
-#define mark_config(member,value) g_sys_config.##member=value
-#define get_config(member) g_sys_config.##member
+sys_config data g_sysconfig;
+#define mark_light_threshold_config(value)       g_sysconfig.light_threshold    = value
+#define mark_m2a_mode_threshold_config(value)    g_sysconfig.m2a_mode_threshold = value
+
+#define mark_config(member,value) mark_##member##_config (value)
+
+#define get_light_threshold_config()       g_sysconfig.light_threshold
+#define get_m2a_mode_threshold_config()    g_sysconfig.m2a_mode_threshold
+
+#define get_config(member) mark_##member##_config ()
+
+#define is_night()      (get_status (l_sensor) < get_config (light_threshold))
+#define is_automode()   (0 == get_status (mode))
+#define is_manualmode() (!is_automode ())
+
+#define human_detected()        get_status (h_sensor)
+#define should_switch2auto()    (get_status (secs_elapsed) >= get_config (m2a_mode_threshold))
+#define switch2auto()           mark_status (mode, 0)
+#define switch2manual()   do {\
+    mark_status (mode, 1);\
+    mark_status (secs_elapsed, 0);\
+}while (0)
 void init_config (void);
 #endif
