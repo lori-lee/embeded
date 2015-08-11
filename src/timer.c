@@ -2,7 +2,7 @@ extern sys_status data g_sysstatus;
 extern sys_config data g_sysconfig;
 void timer0_ISR (void) interrupt 1 using 0
 {
-    static unsigned char data counter = 0x14;
+    volatile static unsigned char data counter = 0x14;
     //disable_int ();
     stop_timer (0);
     reload_timer (TIMER_50MS);
@@ -13,12 +13,6 @@ void timer0_ISR (void) interrupt 1 using 0
     --counter;
     if (!counter) {//1 second elapsed ?
         counter = 0x14;
-        if (is_automode ()) {
-            if (is_night ()) {
-                mark_status (secs_elapsed, get_status (secs_elapsed) - 1);
-                return ;
-            }
-        }
-        reset_light_intensity_counter ();
+        mark_status (second_flag, 1);
     }
 }
