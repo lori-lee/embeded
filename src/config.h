@@ -8,7 +8,7 @@ typedef struct _sys_status {
     bit bdata bcontrol;//
     //
     bit bdata second_flag;//1 second ?
-    unsigned char data int_source;//0x1 --timer0, 0x2 --human sensor, 0x4 --light intensity sensor, 0x8 -- remoate control
+    unsigned char data int_source;//0x1 --timer0, 0x2 --light intensity sensor, 0x4 -- remoate control
     unsigned int data l_sensor;//the value of light intensity
     unsigned int data remote_control;//
     unsigned int secs_elapsed;//seconds elapsed in manual mode

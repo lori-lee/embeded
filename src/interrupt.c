@@ -6,6 +6,8 @@ void update_sys_status ()
 {
     mark_status (l_sensor, read_light_intensity_sensor ());
     mark_status (h_sensor, read_human_sensor ());
+    mark_status (e_relay, read_relay_status ());
+
     if (is_manualmode ()) {
         if (!is_night ()) {
             if (get_status (second_flag)) {

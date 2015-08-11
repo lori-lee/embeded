@@ -15,6 +15,7 @@ void init (void)
     init_timer ();
     init_sensor ();
     init_remote_control ();
+    init_wdt ();
     enable_int ();
 }
 void run (void)
