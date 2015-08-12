@@ -10,7 +10,7 @@ void update_sys_status ()
     mark_status (e_relay, read_relay_status ());
 
     if (is_manualmode ()) {
-        if (!is_night ()) {
+        if (is_relay_off () && !is_dark ()) {
             if (get_status (second_flag)) {
                 inc_secs_elpased ();
                 mark_status (second_flag, 0);
@@ -27,7 +27,7 @@ void check_do (void)
     update_sys_status ();
     if (is_automode ()) {//auto mode
         if (human_detected ()) {//human detected ?
-            if (is_night ()) {//darkness ?
+            if (is_dark ()) {//darkness ?
                 turn_on_bulb ();
             } else {//
                 //DO NOTHING

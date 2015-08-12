@@ -65,20 +65,21 @@
  *  IDLE -- CPU will be shut down but peripheral OSCI still work if set
  *          and CPU will be waken up if interruption occurs
  **/
-#define idle_cpu() PCON |= 0x01
+#define idle_cpu() PCON &= 0x81
 /**
  * IP(Interruption Priority) Register (Bit addressable)
  * +--------------------------------------------+
  * | -- | -- | PT2 | PS | PT1 | PX1 | PT0 | PX0 |
  * +----+----+-----+----+-----+-----+-----+-----+
- * |  0 |  0 |  0  |  0 |  0  |  1  |  1  |  0  |
+ * |  0 |  0 |  0  |  1 |  0  |  1  |  0  |  1  |
  * +--------------------------------------------+
- * PX0 -- Priority external 0, connected to Human sensor
- * PX1 -- Priority external 1, connected to Remote control
+ * PX0 -- Priority external 0, connected to Remote control(infared)
+ * PX1 -- Priority external 1, connected to light intensity sensor
+ * PS  -- Priority Serial Port, connected to manual switch
  * PT0 -- Internal Timer0
  *
  **/
-#define init_int_levels() IP |= 0x12
+#define init_int_levels() IP &= 0x15
 
 /**
  * 0x00 ~ 0x1F: 4 banks general registers (R0 ~ R7)

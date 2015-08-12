@@ -10,6 +10,7 @@
 void init (void)
 {
     disable_int ();
+    init_stack ();
     init_int_levels ();
     init_config ();
     init_timer ();
