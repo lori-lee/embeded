@@ -17,12 +17,12 @@ void init (void)
     init_timer ();
     init_sensor ();
     init_remote_control ();
-    init_wdt ();
     enable_int ();
 }
 void run (void)
 {
     for (;;) {
+        init_wdt ();
         check_do ();
         idle_cpu (); 
     }
