@@ -13,6 +13,7 @@ void init (void)
     init_stack ();
     init_int_levels ();
     init_config ();
+    init_sys_status ();
     init_timer ();
     init_sensor ();
     init_remote_control ();

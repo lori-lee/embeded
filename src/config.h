@@ -32,6 +32,7 @@
  *
  **/
 typedef struct _sys_status {
+    unsigned char low_v: 1;//voltage too low ?
     unsigned char mode: 1;//0 --auto mode, 1 --manual mode
     unsigned char e_relay: 1;//0 --relay off, 1 --relay on
     unsigned char h_sensor: 1;//0 --no human detected, 1 -- the opposite
@@ -49,6 +50,7 @@ typedef struct _sys_status {
 //
 volatile sys_status data g_sysstatus;
 
+#define mark_low_v_status(value)            g_sysstatus.low_v   = value
 #define mark_mode_status(value)             g_sysstatus.mode    = value
 #define mark_e_relay_status(value)          g_sysstatus.e_relay = value
 #define mark_h_sensor_status(value)         g_sysstatus.h_sensor= value
@@ -65,6 +67,7 @@ volatile sys_status data g_sysstatus;
 #define mark_status(member,value)   mark_##member##_status (value)
 #define clear_int_source()          g_sysstatus.int_source = 0
 
+#define get_low_v_status()            g_sysstatus.low_v
 #define get_mode_status()             g_sysstatus.mode
 #define get_e_relay_status()          g_sysstatus.e_relay
 #define get_h_sensor_status()         g_sysstatus.h_sensor
@@ -78,6 +81,7 @@ volatile sys_status data g_sysstatus;
 
 #define get_status(member) get_##member##_status ()
 
+#define is_voltage_low() get_status(low_v)
 #define is_relay_on() get_status (e_relay)
 #define is_relay_off() !get_status (e_relay)
 #define need_save_config() get_status (manual_save_flag)
