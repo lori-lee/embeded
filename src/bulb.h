@@ -6,5 +6,5 @@
 #define turn_on_bulb()
 #define turn_off_bulb()
 
-unsigned int get_light_intensity ();
+extern unsigned int get_light_intensity ();
 #endif

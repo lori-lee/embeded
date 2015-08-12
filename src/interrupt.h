@@ -37,27 +37,40 @@
 
 /**
  * IE (Interruption Enable) Register, bit addressable
- * +-------------------------------------------+
- * | EA | - | ET2 | ES | ET1 | EX1 | ET0 | EX0 |
- * +----+---+-----+----+-----+-----+-----+-----+
- * |  1 | - |  0  |  0 |  0  |  1  |  1  |  1  |
- * +-------------------------------------------+
+ * +-----------------------------------------------+
+ * | EA | ELVD | EADC | ES | ET1 | EX1 | ET0 | EX0 |
+ * +----+------+------+----+-----+-----+-----+-----+
+ * |  1 |   0  |  1   |  0 |  0  |  1  |  1  |  1  |
+ * +-----------------------------------------------+
  *
  * EA  -- Enable all
- * ET2 -- Enable timer2
+ * ELVD-- Enable Low Voltage Detection Interruption
+ * EADC-- Enable ADC Interruption
  * ES  -- Enable serial port
  * ET1 -- Enable timer1
+ *
+ * IE2 (Non bit addressable)
+ * +---------------------------------------------+
+ * | - | ET4 | ET3 | ES4 | ES3 | ET2 | ESPI | ES2|
+ * +---------------------------------------------+
+ * ET4   -- Enable Timer 4
+ * ET3   -- Enable Timer 3
+ * ES4   -- Enable Serial 4
+ * ES3   -- Enable Serial 3
+ * ET2   -- Enable Timer 2
+ * ESPI  -- Enable SPI
+ * ES2   -- Enable Serial 2
  *
  **/
 #define disable_int() EA = 0
 #define enable_int()  EA = 1
 /**
  *  PCON (Power Control) Register (Non-bit addressable)
- *  +--------------------------------------------+
- *  | SMOD | - | - | - | GF1 | GF0 | PDWN | IDLE |
- *  +------+---+---+---+-----+-----+------+------+
- *  |  0   | 0 | 0 | 0 |  0  |  0  |  0   |   1  |
- *  +--------------------------------------------+
+ *  +-----------------------------------------------------+
+ *  | SMOD | SMOD0 | LVDF | POF | GF1 | GF0 | PDWN | IDLE |
+ *  +------+-------+------+-----+-----+-----+------+------+
+ *  |  0   |   0   |   0  |  0  |  0  |  0  |  0   |   1  |
+ *  +-----------------------------------------------------+
  *  SMOD -- Serial MOD, double baud rate if set
  *  GF1  -- General Flag 1
  *  GF0  -- General Flag 0
@@ -68,16 +81,26 @@
 #define idle_cpu() PCON &= 0x81
 /**
  * IP(Interruption Priority) Register (Bit addressable)
- * +--------------------------------------------+
- * | -- | -- | PT2 | PS | PT1 | PX1 | PT0 | PX0 |
- * +----+----+-----+----+-----+-----+-----+-----+
- * |  0 |  0 |  0  |  1 |  0  |  1  |  0  |  1  |
- * +--------------------------------------------+
+ * +-------------------------------------------------+
+ * | PPCA | PLVD | PADC | PS | PT1 | PX1 | PT0 | PX0 |
+ * +------+------+------+----+-----+-----+-----+-----+
+ * |  0   |  0   |   0  |  1 |  0  |  1  |  0  |  1  |
+ * +-------------------------------------------------+
  * PX0 -- Priority external 0, connected to Remote control(infared)
  * PX1 -- Priority external 1, connected to light intensity sensor
  * PS  -- Priority Serial Port, connected to manual switch
  * PT0 -- Internal Timer0
+ * PADC-- Priority ADC
+ * PLVD-- Priority Low Voltage Dectection
+ * PPCA-- Priority PCA
  *
+ * IP2 (Non bit addressable)
+ * +----------------------------------------------+
+ * | - | - | - | PX4 | PPWMFD | PPWM | PSPI | PS2 |
+ * +----------------------------------------------+
+ * PX4    -- Priority External 4
+ * PPWMFD -- Priority PWM abnormal dectecting Interruption
+ * PPWM   -- Priority PWM
  **/
 #define init_int_levels() IP &= 0x15
 
@@ -113,5 +136,51 @@
  *
  **/
 
+/**
+ * ADC_CONTR (ADC Control Register)
+ *
+ * +-------------------------------------------------------------------------+
+ * | ADC_POWER | SPEED1 | SPEED0 | ADC_FLAG | ADC_START | CHS2 | CHS1 | CHS0 |
+ * +-------------------------------------------------------------------------+
+ * ADC_POWER   -- ACD Power Control Bit, 0: Turn off ADC power, verse the versa
+ * ADC_FLAG    -- Flag of whether ADC finished, 1: finished, reset by software
+ * ADC_START   -- 1: start ADC, 0: ADC finished.
+ *
+ **/
+
+/**
+ * AUXR (Auxiliary Register)
+ * +------------------------------------------------------------------+
+ * | T0x12 | T1x12 | UART_M0x6 | T2R | T2_CT | T2x12 | EXTRAM | S1ST2 |
+ * +------------------------------------------------------------------+
+ * T0x12    -- 0: Timer 0 Freq / 12 (Act as traditional 8051)
+ *             1: Timer 0 Freq / 1  (12 times faster than traditional 8051)
+ * T1x12    -- Similar to T0x12
+ *
+ **/
+
+/**
+ * WDT_CONTR
+ * +-------------------------------------------------------------+
+ * | WDT_FLAG | - | EN_WDT | CLR_WDT | IDL_WDT | PS2 | PS1 | PS0 |
+ * +-------------------------------------------------------------+
+ * WDT_FLAG   -- Flag of reset by watch dog, when counter down over, set by hardware,
+ *               need to be reset by software
+ * EN_WDT     -- Enable Watch Dog, cannot be disable by software if enabled
+ * CLR_WDT    -- Clear watch dog timer
+ * IDLE_WDT   -- whether WDT should go on working when CPU is in IDLE mode
+ * PS2  PS1 PS0 (Prescale)
+ *  0    0   0      2
+ *  0    0   1      4
+ *  0    1   0      8
+ *  0    1   1     16
+ *  1    0   0     32
+ *  1    0   1     64
+ *  1    1   0     128
+ *  1    1   1     256
+ *
+ * Overflow timerout: N * Prescale * (1 << 15) / SysClckFreq
+ * N = 12, 6, 1 (for 12T, 6T, 1T)
+ **/
 void check_do (void);
 #endif

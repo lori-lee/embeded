@@ -1,7 +1,7 @@
 #if !defined __SENSOR_H__
 #define __SENSOR_H__
 
-void init_sensor (void);
-unsigned int read_light_intensity_sensor ();
-bit read_human_sensor ();
+extern void init_sensor (void);
+extern unsigned int read_light_intensity_sensor ();
+extern bit read_human_sensor ();
 #endif

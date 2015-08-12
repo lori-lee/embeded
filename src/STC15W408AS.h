@@ -64,12 +64,12 @@ sbit CHIS0    = ADC_CONTR ^ 0;
 
 //AUXR (Auxiliary Register)
 sfr AUXR = 0x8E;
-sbit T0_12 = AUXR ^ 7;
-sbit T1_12 = AUXR ^ 6;
-sbit UART_M06 = AUXR ^ 5;
+sbit T0x12 = AUXR ^ 7;
+sbit T1x12 = AUXR ^ 6;
+sbit UART_M0x6 = AUXR ^ 5;
 sbit T2R   = AUXR ^ 4;
-sbit T2_CT = AUXR ^ 3;
-sbit T2_12 = AUXR ^ 2;
+sbit T2xCT = AUXR ^ 3;
+sbit T2x12 = AUXR ^ 2;
 sbit EXTRAM= AUXR ^ 1;
 sbit S1ST2 = AUXR ^ 0;
 //EEPROM/Flash Related
