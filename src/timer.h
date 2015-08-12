@@ -1,26 +1,6 @@
 #if !defined __TIMER_H__
 #define __TIMER_H__
 #define TIMER_50MS 0xAAFF
-/************************LAYOUT************************
- *                    +---------+
- *                    | E-Relay |
- *                    +----+----+      +--------+
- *                         |   +-------| SWITCH |
- *                      I/O|   |  INT0 +--------+
- *                         |   | 
- * +--------+   I/O   +----+----+  ADC +--------+
- * |H-SENSOR|---------|STC15xCPU|------|L-SENSOR|
- * +--------+         +----+----+      +--------+
- *                         |
- *                         |ES(Serial Interruption) + I/O
- *                         |
- *                 +-------+------+
- *                 |Remote Control|
- *                 +--------------+
- *
- *
- *
- ******************************************************/
 
 /**
  * TCON (Timer Control) Register, bit addressable
