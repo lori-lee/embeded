@@ -1,8 +1,68 @@
+#include <reg51.h>
 #include "config.h"
 #include "sensor.h"
 #include "relay.h"
 #include "bulb.h"
 #include "eprom.h"
+#include "watch_dog.h"
+
+
+/**
+ * External 0 Interrupt
+ *
+ * Addr: 0x003
+ **/
+void EX0_ISR (void) interrupt 0 using 1
+{
+}
+
+/**
+ * Timer 0 Interrupt
+ *
+ * Addr: 0x00B
+ **/
+void timer0_ISR (void) interrupt 1 using 0
+{
+    static unsigned char data counter = 0x14;
+    //disable_int ();
+    stop_timer (0);
+    reload_timer (0, TIMER_25MSH, TIMER_25MSL);
+    run_timer (0);
+    //enable_int ();
+    //
+    if (!--counter) {//1 second elapsed ?
+        counter = 0x14;
+        mark_status (second_flag, 1);
+        mark_status (int_source, get_status (int_source) | INT_TIMER0);
+        //init_wdt ();//reset watch dog
+    }
+}
+/**
+ * Serial Port Interrupt
+ *
+ **/
+void ES_ISR (void) interrupt 3 using 1
+{
+
+}
+/**
+ *
+ * A/D Convertion Interrupt
+ *
+ **/
+void ADC_ISR (void) interrupt 4 using 1
+{
+}
+
+/**
+ *
+ * Low voltage detection Interrupt
+ *
+ **/
+void LVD_ISR (void) interrupt 5 using 1
+{
+    mark_status (low_v, 1);
+}
 
 void update_sys_status ()
 {

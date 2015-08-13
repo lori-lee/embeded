@@ -1,10 +1,8 @@
 #include <reg51.h>
-#include <stdio.h>
 #include "STC15W408AS.h"
 #include "config.h"
 #include "relay.h"
 #include "interrupt.h"
-#include "timer.h"
 #include "sensor.h"
 #include "remote_control.h"
 #include "watch_dog.h"
