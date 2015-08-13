@@ -91,6 +91,6 @@ sfr IAP_CMD  = 0xC5;
 sfr IAP_TRIG = 0xC6;
 sfr IAP_CONTR= 0xC7;
 //WDT (Watch Dog Control Register)
-sfr WDT_CONTR = 0xE1;
+sfr WDT_CONTR = 0xC1;
 
 #endif
