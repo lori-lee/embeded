@@ -8,6 +8,10 @@
 #include "sensor.h"
 #include "remote_control.h"
 #include "watch_dog.h"
+
+sys_status data g_sysstatus;
+sys_config data g_sysconfig;
+
 void init (void)
 {
     disable_int ();

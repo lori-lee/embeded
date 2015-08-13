@@ -3,9 +3,6 @@
 #include "timer.h"
 #include "watch_dog.h"
 
-extern sys_status g_sysstatus;
-extern sys_config g_sysconfig;
-
 void timer0_ISR (void) interrupt 1 using 0
 {
     static unsigned char data counter = 0x14;

@@ -49,7 +49,7 @@ typedef struct _sys_status {
     unsigned char minute;//for auto turn off bulk when timeout
 }sys_status;
 //
-volatile sys_status data g_sysstatus;
+extern sys_status g_sysstatus;
 
 #define mark_low_v_status(value)            g_sysstatus.low_v   = value
 #define mark_mode_status(value)             g_sysstatus.mode    = value
@@ -105,7 +105,7 @@ typedef struct _sys_config {
     unsigned char minute;//
 }sys_config;
 //
-volatile sys_config data g_sysconfig;
+extern sys_config g_sysconfig;
 
 #define mark_light_threshold_config(value)       g_sysconfig.light_threshold    = value
 #define mark_m2a_mode_threshold_config(value)    g_sysconfig.m2a_mode_threshold = value
@@ -121,12 +121,12 @@ volatile sys_config data g_sysconfig;
 
 #define get_config(member) mark_##member##_config ()
 
-#define is_dark()       (get_status (l_sensor) < get_config (light_threshold))
+#define is_dark()       (g_sysstatus.l_sensor < g_sysconfig.light_threshold)
 #define is_automode()   (0 == get_status (mode))
 #define is_manualmode() (!is_automode ())
 
 #define human_detected()        get_status (h_sensor)
-#define should_switch2auto()    (get_status (secs_elapsed) >= get_config (m2a_mode_threshold))
+#define should_switch2auto()    (g_sysstatus.secs_elapsed >= g_sysconfig.m2a_mode_threshold)
 #define inc_secs_elapsed()      ++get_status (secs_elapsed)
 #define switch2auto()           mark_status (mode, 0)
 #define switch2manual()   do {\

@@ -4,7 +4,6 @@
 #include "bulb.h"
 #include "eprom.h"
 
-extern sys_status g_sysstatus;
 void update_sys_status ()
 {
     //mark_status (l_sensor, read_light_intensity_sensor ());
