@@ -1,4 +1,6 @@
 #include "config.h"
+#include "sensor.h"
+#include "relay.h"
 #include "bulb.h"
 #include "eprom.h"
 
