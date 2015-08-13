@@ -1,5 +1,6 @@
 #include <reg51.h>
 #include "config.h"
+#include "interrupt.h"
 #include "sensor.h"
 #include "relay.h"
 #include "bulb.h"
