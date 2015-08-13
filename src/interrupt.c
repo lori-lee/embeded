@@ -104,4 +104,5 @@ void check_do (void)
         }
 
     }
+    clear_int_source ();
 }

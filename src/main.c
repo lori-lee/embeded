@@ -28,7 +28,6 @@ void run (void)
     for (;;) {
         init_wdt ();
         check_do ();
-        clear_int_source ();
         idle_cpu (); 
     }
 }
