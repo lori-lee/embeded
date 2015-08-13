@@ -6,7 +6,7 @@ extern sys_status g_sysstatus;
 void update_sys_status ()
 {
     //mark_status (l_sensor, read_light_intensity_sensor ());
-    mark_status (h_sensor, read_human_sensor_sensor ());
+    mark_status (h_sensor, read_human_sensor ());
     mark_status (e_relay, read_relay_status ());
 }
 void check_do (void)
