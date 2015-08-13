@@ -120,7 +120,7 @@ volatile sys_config data g_sysconfig;
 
 #define human_detected()        get_status (h_sensor)
 #define should_switch2auto()    (get_status (secs_elapsed) >= get_config (m2a_mode_threshold))
-#define inc_secs_elpased()      ++get_status (secs_elapsed)
+#define inc_secs_elapsed()      ++get_status (secs_elapsed)
 #define switch2auto()           mark_status (mode, 0)
 #define switch2manual()   do {\
     mark_status (mode, 1);\
@@ -128,5 +128,26 @@ volatile sys_config data g_sysconfig;
 }while (0)
 
 
-extern void init_config (void);
+#define init_config() do {\
+    mark_config (light_threshold, 10);\
+    mark_config (m2a_mode_threshold, 60);\
+    mark_config (hour, 0);\
+    mark_config (minute, 0);\
+}while (0)
+
+#define init_sys_status() do {\
+    mark_status (low_v, 0);\
+    mark_status (mode, 0);\
+    mark_status (e_relay, 0);\
+    mark_status (h_sensor, 0);\
+    mark_status (wdt, 0);\
+    mark_status (second_flag, 0);\
+    mark_status (manual_save_flag, 0);\
+    clear_int_source ();\
+    mark_status (l_sensor, 0);\
+    mark_status (secs_elapsed, 0);\
+    mark_status (hour, 0);\
+    mark_status (minute, 0);\
+}while (0)
+
 #endif

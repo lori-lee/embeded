@@ -1,5 +1,6 @@
 #include <reg51.h>
 #include <stdio.h>
+#include "STC15W408AS.h"
 #include "config.h"
 #include "relay.h"
 #include "interrupt.h"
@@ -11,6 +12,7 @@ void init (void)
 {
     disable_int ();
     init_stack ();
+    init_int ();
     init_int_levels ();
     init_config ();
     init_sys_status ();
@@ -24,6 +26,7 @@ void run (void)
     for (;;) {
         init_wdt ();
         check_do ();
+        clear_int_source ();
         idle_cpu (); 
     }
 }

@@ -1,7 +1,15 @@
 #if !defined __TIMER_H__
 #define __TIMER_H__
-#define TIMER_50MS 0xAAFF
+#define FREQ_OSI 24000000L
+//T0x12 = 0, FREQ_OSI / 12, 24x10^6 / (12 * 40) = 5x10^4
+//65535 - 5x10^4 = 15535
+#define TIMER_25MSH 0x3C
+#define TIMER_25MSL 0xAF
 
+#define reload_timer(index,HV,LV) do {\
+    TH##index = HV;\
+    TL##index = LV;\
+}while (0)
 /**
  * TCON (Timer Control) Register, bit addressable
  * +-----------------------------------------------+

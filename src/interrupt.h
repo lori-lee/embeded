@@ -37,10 +37,11 @@
 
 /**
  * IE (Interruption Enable) Register, bit addressable
+ *   7     6      5     4     3     2     1     0
  * +-----------------------------------------------+
  * | EA | ELVD | EADC | ES | ET1 | EX1 | ET0 | EX0 |
  * +----+------+------+----+-----+-----+-----+-----+
- * |  1 |   0  |  1   |  0 |  0  |  1  |  1  |  1  |
+ * |  1 |   1  |  0   |  1 |  0  |  0  |  1  |  1  |
  * +-----------------------------------------------+
  *
  * EA  -- Enable all
@@ -64,6 +65,18 @@
  **/
 #define disable_int() EA = 0
 #define enable_int()  EA = 1
+
+#define enable_LVDP_int()  IE |= 0x40
+#define disable_LVDP_int() IE &= ~0x40
+
+#define enable_ADC_int()   IE |= 0x20
+#define disable_ADC_int()  IE &= ~0x20 
+
+#define enable_switch_int()  IE |= 0x04
+#define disable_switch_int() IE &= ~0x04
+
+#define init_int()   IE = 0x53
+
 /**
  *  PCON (Power Control) Register (Non-bit addressable)
  *  +-----------------------------------------------------+
@@ -84,7 +97,7 @@
  * +-------------------------------------------------+
  * | PPCA | PLVD | PADC | PS | PT1 | PX1 | PT0 | PX0 |
  * +------+------+------+----+-----+-----+-----+-----+
- * |  0   |  0   |   0  |  1 |  0  |  1  |  0  |  1  |
+ * |  0   |  1   |   0  |  1 |  0  |  1  |  0  |  1  |
  * +-------------------------------------------------+
  * PX0 -- Priority external 0, connected to Remote control(infared)
  * PX1 -- Priority external 1, connected to light intensity sensor
@@ -102,17 +115,20 @@
  * PPWMFD -- Priority PWM abnormal dectecting Interruption
  * PPWM   -- Priority PWM
  **/
-#define init_int_levels() IP &= 0x15
+#define init_int_levels() do {\
+    IP  &= 0x55;\
+    IP2 &= 0;\
+}while (0)
 
 /**
  * 0x00 ~ 0x1F: 4 banks general registers (R0 ~ R7)
  * 0x20 ~ 0x2F: 16 Bytes (128 Bits) bit addressable memory
  *
  * SP default to 0x07 when power on
- * change to 0x30
+ * change to 0x60
  *
  **/
-#define init_stack() SP = 0x30
+#define init_stack() SP = 0x60
 
 /**
  * UART
@@ -182,5 +198,6 @@
  * Overflow timerout: N * Prescale * (1 << 15) / SysClckFreq
  * N = 12, 6, 1 (for 12T, 6T, 1T)
  **/
-void check_do (void);
+
+extern void check_do (void);
 #endif
