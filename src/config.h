@@ -5,11 +5,11 @@
  *                    +----+----+      +--------+
  *                         |   +-------| SWITCH |
  *                      I/O|   |  INT0 +--------+
- *                         |   | 
+ *                         v   v 
  * +--------+   I/O   +----+----+  ADC +--------+
- * |H-SENSOR|---------|STC15xCPU|------|L-SENSOR|
+ * |H-SENSOR|-------->|STC15xCPU|<-----|L-SENSOR|
  * +--------+         +----+----+      +--------+
- *                         |
+ *                         ^
  *                         |ES(Serial Interruption) + I/O
  *                         |
  *                 +-------+------+
@@ -36,10 +36,11 @@ typedef struct _sys_status {
     unsigned char mode: 1;//0 --auto mode, 1 --manual mode
     unsigned char e_relay: 1;//0 --relay off, 1 --relay on
     unsigned char h_sensor: 1;//0 --no human detected, 1 -- the opposite
+
     unsigned char wdt: 1;//0 -- watch dog disabled, 1 -- enabled
-    //
     unsigned char second_flag: 1;//1 second ?
     unsigned char manual_save_flag: 1;//SAVE from Remote control?
+    unsigned char auto_turn_off: 1;//auto turn off bulb when timeout ?
 
     unsigned char int_source;//0x1 --timer0, 0x2 --light intensity sensor, 0x4 -- remote control, 0x8 -- Switch
     unsigned int l_sensor;//the value of light intensity
@@ -55,23 +56,29 @@ volatile sys_status data g_sysstatus;
 #define mark_e_relay_status(value)          g_sysstatus.e_relay = value
 #define mark_h_sensor_status(value)         g_sysstatus.h_sensor= value
 #define mark_wdt_status(value)              g_sysstatus.wdt     = value
+#define mark_second_flag_status(value)      g_sysstatus.second_flag      = value
+#define mark_manual_save_flag_status(value) g_sysstatus.manual_save_flag = value
+#define mark_auto_turn_off_status(value)    g_sysstatus.auto_turn_off    = value
+
 #define mark_int_source_status(value)       g_sysstatus.int_source = value
 #define mark_l_sensor_status(value)         g_sysstatus.l_sensor   = value
 #define mark_remote_control_status(value)   g_sysstatus.remote_control = value
-#define mark_second_flag_status(value)      g_sysstatus.second_flag    = value
-#define mark_manual_save_flag_status(value) g_sysstatus.manual_save_flag = value
 #define mark_secs_elapsed_status(value)     g_sysstatus.secs_elapsed   = value
 #define mark_hour_status(value)             g_sysstatus.hour  = value
 #define mark_minute_status(value)           g_sysstatus.minute= value
 
 #define mark_status(member,value)   mark_##member##_status (value)
-#define clear_int_source()          g_sysstatus.int_source = 0
+#define clear_int_source()          mark_status(int_source, 0)
 
 #define get_low_v_status()            g_sysstatus.low_v
 #define get_mode_status()             g_sysstatus.mode
 #define get_e_relay_status()          g_sysstatus.e_relay
 #define get_h_sensor_status()         g_sysstatus.h_sensor
 #define get_wdt_status()              g_sysstatus.wdt
+#define get_second_flag_status()      g_sysstatus.second_flag
+#define get_manual_save_flag_status() g_sysstatus.manual_save_flag
+#define get_auto_turn_off_status()    g_sysstatus.auto_turn_off
+
 #define get_int_source_status()       g_sysstatus.int_source
 #define get_l_sensor_status()         g_sysstatus.l_sensor
 #define get_remote_control_status()   g_sysstatus.remote_control
@@ -143,6 +150,8 @@ volatile sys_config data g_sysconfig;
     mark_status (wdt, 0);\
     mark_status (second_flag, 0);\
     mark_status (manual_save_flag, 0);\
+    mark_status (auto_turn_off, 0);\
+    \
     clear_int_source ();\
     mark_status (l_sensor, 0);\
     mark_status (secs_elapsed, 0);\
