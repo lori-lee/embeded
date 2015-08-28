@@ -80,11 +80,19 @@ void check_do (void)
             mark_status (l_sensor, read_light_intensity_sensor ());
             if (is_dark ()) {//darkness ?
                 turn_on_bulb ();
+                mark_status (e_relay, 1);
+                mark_status (delay, get_config (delay));//Reset count down
             } else {//
                 //DO NOTHING
             }
         } else {//no human ?
-            turn_off_bulb ();
+            if (get_status (second_flag)) {
+                dec_delay ();
+                if (delay_timeout ()) {
+                    turn_off_bulb ();
+                    mark_status (e_relay, 0);
+                }
+            }
         }
     } else {//manual mode ?
         if (need_save_config ()) {
@@ -94,7 +102,6 @@ void check_do (void)
         if (is_relay_off () && !is_dark ()) {
             if (get_status (second_flag)) {
                 inc_secs_elapsed ();
-                mark_status (second_flag, 0);
                 if (should_switch2auto ()) {//timeout in manual mode ?
                     switch2auto ();
                 }
@@ -102,7 +109,17 @@ void check_do (void)
         } else {
             mark_status (secs_elapsed, 0);
         }
-
+        //
+        if (manual_turn_on_bulb ()) {
+            turn_on_bulb ();
+            mark_status (e_relay, 1);
+        } else if (manual_turn_off_bulb ()) {
+            turn_off_bulb ();
+            mark_status (e_relay, 0);
+        }
+    }
+    if (get_status (second_flag)) {
+        mark_status (second_flag, 0);
     }
     clear_int_source ();
 }
