@@ -117,6 +117,7 @@ sfr  P4M1  = 0xB3
 sfr  P5    = 0xC8
 sfr  P1M0  = 0xCA
 sfr  P1M1  = 0xC9
+
 /**
  * M1   M0
  * 0    0   -- bi-direction, as C8051 I/O mode, weak-pull
