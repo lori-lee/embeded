@@ -3,8 +3,6 @@
 
 #include "config.h"
 
-#define turn_on_bulb()
-#define turn_off_bulb()
-
-extern unsigned int get_light_intensity ();
+#define turn_on_bulb()    P1 |= 0x02
+#define turn_off_bulb()   P1 &= ~0x02
 #endif
