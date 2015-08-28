@@ -26,7 +26,7 @@ void init (void)
 void run (void)
 {
     for (;;) {
-        init_wdt ();
+        init_wdt ();//Feed watch dog
         check_do ();
         idle_cpu (); 
     }

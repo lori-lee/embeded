@@ -41,7 +41,7 @@
  * +-----------------------------------------------+
  * | EA | ELVD | EADC | ES | ET1 | EX1 | ET0 | EX0 |
  * +----+------+------+----+-----+-----+-----+-----+
- * |  1 |   1  |  0   |  1 |  0  |  0  |  1  |  1  |
+ * |  1 |   1  |  1   |  1 |  0  |  0  |  1  |  1  |
  * +-----------------------------------------------+
  *
  * EA  -- Enable all
@@ -72,17 +72,17 @@
 #define enable_ADC_int()   IE |= 0x20
 #define disable_ADC_int()  IE &= ~0x20 
 
-#define enable_switch_int()  IE |= 0x04
-#define disable_switch_int() IE &= ~0x04
+#define enable_switch_int()  IE |= 0x01
+#define disable_switch_int() IE &= ~0x01
 
-#define init_int()   IE = 0x53
+#define init_int()   IE |= 0x73
 
 /**
  *  PCON (Power Control) Register (Non-bit addressable)
  *  +-----------------------------------------------------+
  *  | SMOD | SMOD0 | LVDF | POF | GF1 | GF0 | PDWN | IDLE |
  *  +------+-------+------+-----+-----+-----+------+------+
- *  |  0   |   0   |   0  |  0  |  0  |  0  |  0   |   1  |
+ *  |  0   |   0   |   1  |  0  |  0  |  0  |  0   |   1  |
  *  +-----------------------------------------------------+
  *  SMOD -- Serial MOD, double baud rate if set
  *  GF1  -- General Flag 1
@@ -91,13 +91,13 @@
  *  IDLE -- CPU will be shut down but peripheral OSCI still work if set
  *          and CPU will be waken up if interruption occurs
  **/
-#define idle_cpu() PCON &= 0x81
+#define idle_cpu() PCON |= 0x01
 /**
  * IP(Interruption Priority) Register (Bit addressable)
  * +-------------------------------------------------+
  * | PPCA | PLVD | PADC | PS | PT1 | PX1 | PT0 | PX0 |
  * +------+------+------+----+-----+-----+-----+-----+
- * |  0   |  1   |   0  |  1 |  0  |  1  |  0  |  1  |
+ * |  0   |  1   |   0  |  1 |  0  |  0  |  0  |  1  |
  * +-------------------------------------------------+
  * PX0 -- Priority external 0, connected to Remote control(infared)
  * PX1 -- Priority external 1, connected to light intensity sensor
@@ -116,7 +116,7 @@
  * PPWM   -- Priority PWM
  **/
 #define init_int_levels() do {\
-    IP  &= 0x55;\
+    IP  |= 0x51;\
     IP2 &= 0;\
 }while (0)
 
@@ -125,10 +125,10 @@
  * 0x20 ~ 0x2F: 16 Bytes (128 Bits) bit addressable memory
  *
  * SP default to 0x07 when power on
- * change to 0x60
+ * change to 0x90
  *
  **/
-#define init_stack() SP = 0x60
+#define init_stack() SP = 0x90
 
 /**
  * UART
@@ -151,7 +151,8 @@
  * RI   -- Receive Interruption flag bit, reset by CPU (software)
  *
  **/
-
+#define clear_tx_int_flag() SCON &= ~0x20
+#define clear_rx_int_flag() SCON &= ~0x01
 /**
  * ADC_CONTR (ADC Control Register)
  *
@@ -163,7 +164,11 @@
  * ADC_START   -- 1: start ADC, 0: ADC finished.
  *
  **/
-
+#define turn_on_ADC() ADC_CONTR |= 0x80
+#define turn_off_ADC() ADC_CONTR&= ~0x80
+#define clear_ADC_int_flag() ADC_CONTR &= ~0x10
+#define start_ADC() ADC_CONTR |= 0x08
+#define end_ADC() ADC_CONTR &= ~0x08
 /**
  * AUXR (Auxiliary Register)
  * +------------------------------------------------------------------+
@@ -174,7 +179,7 @@
  * T1x12    -- Similar to T0x12
  *
  **/
-
+#define no_freq_division() AUXR &= ~0xC0
 /**
  * WDT_CONTR
  * +-------------------------------------------------------------+

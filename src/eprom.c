@@ -1,3 +1,4 @@
+#include "STC15W408AS.h"
 #include <intrins.h>
 #include "eprom.h"
 

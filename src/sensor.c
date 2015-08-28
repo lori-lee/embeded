@@ -1,5 +1,6 @@
 void init_sensor (void)
 {
+
 }
 unsigned int read_light_intensity_sensor ()
 {
