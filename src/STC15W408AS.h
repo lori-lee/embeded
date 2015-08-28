@@ -130,4 +130,32 @@ sfr  P1M1  = 0xC9
     P##pi##M0 |= (mode & 1) << j;\
     P##pi##M1 |= ((mode & 2) >> 1) << j;\
 }while (0)
+
+/**
+ * +------------------------------------------------------------------------+
+ * | ADC_PWR  | SPEED1 | SPEED0 | ADC_FLAG | ADC_START | CHS2 | CHS1 | CHS0 |
+ * +------------------------------------------------------------------------+
+ *
+ * ADC_PWR -- ADC Power
+ * SPEED1 SPEED0
+ *   0      0
+ *   0      1
+ *   1      1
+ *
+ * ADC_FLAG   -- ADC INT Flag
+ *
+ * Channel selector
+ * CHS2  CHS1  CHS0
+ *  0     0      0    -- ADC0/P1.0
+ *  0     0      1    -- ADC1/P1.1
+ *  .... ....
+ *
+ **/
+//ADC
+sfr ADC_CONTR = 0xBC
+//bit[7:0]
+sfr ADC_RES   = 0xBD
+//bit [1:0]
+sfr ADC_RESL  = 0xBE
+
 #endif
