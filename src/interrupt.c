@@ -83,7 +83,7 @@ void LVD_ISR (void) interrupt 6 using 1
 void update_sys_status ()
 {
     //mark_status (l_sensor, read_light_intensity_sensor ());
-    mark_status (h_sensor, read_human_sensor ());
+    mark_status (h_sensor, read_human_sensor () >= 20);
     mark_status (e_relay, read_relay_status ());
 }
 void check_do (void)
