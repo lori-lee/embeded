@@ -43,7 +43,7 @@
  * +-----------------------------------------------+
  * | EA | ELVD | EADC | ES | ET1 | EX1 | ET0 | EX0 |
  * +----+------+------+----+-----+-----+-----+-----+
- * |  1 |   1  |  1   |  1 |  0  |  0  |  1  |  1  |
+ * |  1 |   1  |  0   |  1 |  0  |  0  |  1  |  1  |
  * +-----------------------------------------------+
  *
  * EA  -- Enable all
@@ -77,7 +77,7 @@
 #define enable_switch_int()  IE |= 0x01
 #define disable_switch_int() IE &= ~0x01
 
-#define init_int()   IE |= 0x73
+#define init_int()   IE |= 0x53
 
 /**
  *  PCON (Power Control) Register (Non-bit addressable)
@@ -171,14 +171,22 @@
 #define is_ADC_over()           (g_sysstatus.ADC10bit & 0x8000)
 #define mark_ADC_over()         g_sysstatus.ADC10bit |= 0x8000
 #define clear_ADC_over()        g_sysstatus.ADC10bit &= ~0x8000
+#define get_ADC_result()        (g_sysstatus.ADC10bit &= 0x2FFFF)
 
 #define select_ADC_port(index)  ADC_CONTR |= index & 7
 
-#define turn_on_ADC() ADC_CONTR |= 0x80
-#define turn_off_ADC() ADC_CONTR&= ~0x80
-#define clear_ADC_int_flag() ADC_CONTR &= ~0x10
-#define start_ADC() ADC_CONTR |= 0x08
-#define end_ADC() ADC_CONTR &= ~0x08
+#define turn_on_ADC()           ADC_CONTR |= 0x80
+#define turn_off_ADC()          ADC_CONTR &= ~0x80
+#define clear_ADC_int_flag()    ADC_CONTR &= ~0x10
+#define start_ADC()             ADC_CONTR |= 0x08
+#define end_ADC()               ADC_CONTR &= ~0x08
+
+#define prepare_ADC(channel) do {\
+    clear_ADC_over ();\
+    select_ADC_channel (channel);\
+    ADC_CONTR = 0x0E8 + (channel & 7);\
+} while (0)
+#define desctruct_ADC()        ADC_CONTR &= 0x67
 /**
  * AUXR (Auxiliary Register)
  * +------------------------------------------------------------------+
@@ -190,30 +198,6 @@
  *
  **/
 #define no_freq_division() AUXR &= ~0xC0
-/**
- * WDT_CONTR
- * +-------------------------------------------------------------+
- * | WDT_FLAG | - | EN_WDT | CLR_WDT | IDL_WDT | PS2 | PS1 | PS0 |
- * +-------------------------------------------------------------+
- * WDT_FLAG   -- Flag of reset by watch dog, when counter down over, set by hardware,
- *               need to be reset by software
- * EN_WDT     -- Enable Watch Dog, cannot be disable by software if enabled
- * CLR_WDT    -- Clear watch dog timer
- * IDLE_WDT   -- whether WDT should go on working when CPU is in IDLE mode
- * PS2  PS1 PS0 (Prescale)
- *  0    0   0      2
- *  0    0   1      4
- *  0    1   0      8
- *  0    1   1     16
- *  1    0   0     32
- *  1    0   1     64
- *  1    1   0     128
- *  1    1   1     256
- *
- * Overflow timerout: N * Prescale * (1 << 15) / SysClckFreq
- * N = 12, 6, 1 (for 12T, 6T, 1T)
- **/
-
 
 #define FREQ_OSI 24000000L
 //T0x12 = 0, FREQ_OSI / 12, 24x10^6 / (12 * 40) = 5x10^4

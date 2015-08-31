@@ -1,7 +1,7 @@
 #if !defined __STC15W408AS_H__
 #define __STC15W408AS_H__
 //IE2 (Interruption Enable Register 2)
-sfr IE2 = 0xAF;
+sfr IE2 = 0x0AF;
 
 //sbit ET4 = IE2 ^ 6;
 //sbit ET3 = IE2 ^ 5;
@@ -12,7 +12,7 @@ sfr IE2 = 0xAF;
 //sbit ES2 = IE2 ^ 0;
 
 //IP2 (Interruption Priority Register 2)
-sfr IP2 = 0xB5;
+sfr IP2 = 0x0B5;
 
 //sbit PX4    = IP2 ^ 4;
 //sbit PPWMFD = IP2 ^ 3;
@@ -21,7 +21,7 @@ sfr IP2 = 0xB5;
 //sbit PS2    = IP2 ^ 0;
 
 //S2CON (Serial Port Control Register 2)
-sfr S2CON = 0x9A;
+sfr S2CON = 0x09A;
 
 //sbit S2SM0 = S2CON ^ 7;
 //sbit S2SM2 = S2CON ^ 5;
@@ -33,7 +33,7 @@ sfr S2CON = 0x9A;
 
 
 //S3COn (Serial UART3 Control Register)
-sfr S3CON = 0xAC;
+sfr S3CON = 0x0AC;
 
 //sbit S3SM0 = S3CON ^ 7;
 //sbit S3ST3 = S3CON ^ 6;
@@ -46,7 +46,7 @@ sfr S3CON = 0xAC;
 
 
 //S4COn (Serial UART4 Control Register)
-sfr S4CON = 0xAC;
+sfr S4CON = 0x0AC;
 
 //sbit S4SM0 = S4CON ^ 7;
 //sbit S4ST3 = S4CON ^ 6;
@@ -59,7 +59,7 @@ sfr S4CON = 0xAC;
 
 
 //ADC_CONTR (ADC Control Register)
-sfr ADC_CONTR = 0xBC;
+sfr ADC_CONTR = 0x0BC;
 
 //sbit ADC_POWER= ADC_CONTR ^ 7;
 //sbit SPEED1   = ADC_CONTR ^ 6;
@@ -84,12 +84,13 @@ sfr AUXR = 0x8E;
 
 
 //EEPROM/Flash Related
-sfr IAP_DATA = 0xC2;
-sfr IAP_ADDRH= 0xC3;
-sfr IAP_ADDRL= 0xC4;
-sfr IAP_CMD  = 0xC5;
-sfr IAP_TRIG = 0xC6;
-sfr IAP_CONTR= 0xC7;
+sfr IAP_DATA = 0x0C2;
+sfr IAP_ADDRH= 0x0C3;
+sfr IAP_ADDRL= 0x0C4;
+sfr IAP_CMD  = 0x0C5;
+sfr IAP_TRIG = 0x0C6;
+sfr IAP_CONTR= 0x0C7;
+
 //WDT (Watch Dog Control Register)
 sfr WDT_CONTR = 0xC1;
 
@@ -102,21 +103,21 @@ sfr  P1    = 0x90;
 sfr  P1M0  = 0x92;
 sfr  P1M1  = 0x91;
 
-sfr  P2    = 0xA0;
+sfr  P2    = 0x0A0;
 sfr  P2M0  = 0x96;
 sfr  P2M1  = 0x95;
 
-sfr  P3    = 0xB0;
-sfr  P3M0  = 0xB2;
-sfr  P3M1  = 0xB1;
+sfr  P3    = 0x0B0;
+sfr  P3M0  = 0x0B2;
+sfr  P3M1  = 0x0B1;
 
-sfr  P4    = 0xC0;
-sfr  P4M0  = 0xB4;
-sfr  P4M1  = 0xB3;
+sfr  P4    = 0x0C0;
+sfr  P4M0  = 0x0B4;
+sfr  P4M1  = 0x0B3;
 
-sfr  P5    = 0xC8;
-sfr  P1M0  = 0xCA;
-sfr  P1M1  = 0xC9;
+sfr  P5    = 0x0C8;
+sfr  P1M0  = 0x0CA;
+sfr  P1M1  = 0x0C9;
 
 /**
  * M1   M0
@@ -131,6 +132,15 @@ sfr  P1M1  = 0xC9;
     P##pi##M1 |= ((mode & 2) >> 1) << j;\
 }while (0)
 
+/**
+ * P1ASF (Addr: 0x9D)
+ * +-----------------------------------------------------------------------+
+ * | P17ASF | P16ASF | P15ASF | P14ASF | P13ASF | P12ASF | P11ASF | P10ASF |
+ * +-----------------------------------------------------------------------+
+ *
+ **/
+sfr P1ASF = 0x9D;
+#define select_ADC_channel(channel)     P1ASF = (channel) & 0x0FF
 /**
  * +------------------------------------------------------------------------+
  * | ADC_PWR  | SPEED1 | SPEED0 | ADC_FLAG | ADC_START | CHS2 | CHS1 | CHS0 |
@@ -152,11 +162,11 @@ sfr  P1M1  = 0xC9;
  *
  **/
 //ADC
-sfr ADC_CONTR = 0xBC;
+sfr ADC_CONTR = 0x0BC;
 //bit[7:0]
-sfr ADC_RES   = 0xBD;
+sfr ADC_RES   = 0x0BD;
 //bit [1:0]
-sfr ADC_RESL  = 0xBE;
+sfr ADC_RESL  = 0x0BE;
 
 sfr CLK_DIV = 0x97;
 #endif
