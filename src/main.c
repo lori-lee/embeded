@@ -21,12 +21,13 @@ void init (void)
     init_timer ();
     init_sensor ();
     init_remote_control ();
+    init_wdt ();
     enable_int ();
 }
 void run (void)
 {
     for (;;) {
-        init_wdt ();//Feed watch dog
+        clear_wdt ();//Feed watch dog
         check_do ();
         idle_cpu (); 
     }
