@@ -36,8 +36,11 @@
 //INT Source
 #define  INT_TIMER0 0x1
 #define  INT_LSENOR 0x2
-#define  INT_RTCTR  0x4
-#define  INT_SWITCH 0x8
+#define  INT_HSENOR 0x4
+#define  INT_RTCTR  0x8
+#define  INT_SWITCH 0x10
+#define  INT_LVD    0x20
+#define  INT_ADC    0x40
 /**
  * Current system status
  *
@@ -54,6 +57,7 @@ typedef struct _sys_status {
     unsigned char auto_turn_off: 1;//auto turn off bulb when timeout ?
 
     unsigned char int_source;//0x1 --timer0, 0x2 --light intensity sensor, 0x4 -- remote control, 0x8 -- Switch
+    unsigned int  ADC10bit;//ADC result
     unsigned int l_sensor;//the value of light intensity
     unsigned int secs_elapsed;//seconds elapsed in manual mode
     unsigned char hour;//for auto turn off bulk when timeout
@@ -74,9 +78,12 @@ extern sys_status g_sysstatus;
 #define mark_int_source_status(value)       g_sysstatus.int_source = value
 #define mark_l_sensor_status(value)         g_sysstatus.l_sensor   = value
 #define mark_remote_control_status(value)   g_sysstatus.remote_control = value
+#define mark_ADC10bit_status(value)         g_sysstatus.ADC10bit = value
 #define mark_secs_elapsed_status(value)     g_sysstatus.secs_elapsed   = value
 #define mark_hour_status(value)             g_sysstatus.hour  = value
 #define mark_minute_status(value)           g_sysstatus.minute= value
+
+#define set_int_source(int_src)             g_sysstatus.int_source |= int_src
 
 #define mark_status(member,value)   mark_##member##_status (value)
 #define clear_int_source()          mark_status(int_source, 0)
@@ -92,6 +99,7 @@ extern sys_status g_sysstatus;
 
 #define get_int_source_status()       g_sysstatus.int_source
 #define get_l_sensor_status()         g_sysstatus.l_sensor
+#define get_ADC10bit_status()         g_sysstatus.ADC10bit
 #define get_remote_control_status()   g_sysstatus.remote_control
 #define get_secs_elapsed_status()     g_sysstatus.secs_elapsed
 #define get_hour_status()             g_sysstatus.hour

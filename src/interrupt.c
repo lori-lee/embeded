@@ -15,6 +15,8 @@
  **/
 void EX0_ISR (void) interrupt 0 using 1
 {
+    mark_status (mode, 1);
+    set_int_source (INT_SWITCH);
 }
 
 /**
@@ -34,7 +36,7 @@ void timer0_ISR (void) interrupt 1 using 0
     if (!--counter) {//1 second elapsed ?
         counter = 0x14;
         mark_status (second_flag, 1);
-        mark_status (int_source, get_status (int_source) | INT_TIMER0);
+        set_int_source (INT_TIMER0);
         //init_wdt ();//reset watch dog
     }
 }
@@ -42,17 +44,23 @@ void timer0_ISR (void) interrupt 1 using 0
  * Serial Port Interrupt
  *
  **/
-void ES_ISR (void) interrupt 3 using 1
+void ES_ISR (void) interrupt 4 using 1
 {
-
+    set_int_source (INT_RTCTR);
 }
 /**
  *
  * A/D Convertion Interrupt
  *
  **/
-void ADC_ISR (void) interrupt 4 using 1
+void ADC_ISR (void) interrupt 5 using 1
 {
+    if (0 == CLK_DIV & ~0x20) {//Or PCON2.5(ADRJ == 0)
+        mark_status (ADC10bit, 0x8000 + (ADC_RES << 2) + (ADC_RESL & 4));
+    } else {//ADRJ == 1
+        mark_status (ADC10bit, 0x8000 + ((ADC_RES & 4) << 8) + ADC_RESL);
+    }
+    set_int_source (INT_ADC);
 }
 
 /**
@@ -60,9 +68,11 @@ void ADC_ISR (void) interrupt 4 using 1
  * Low voltage detection Interrupt
  *
  **/
-void LVD_ISR (void) interrupt 5 using 1
+void LVD_ISR (void) interrupt 6 using 1
 {
     mark_status (low_v, 1);
+    clear_LVD_int_flag ();
+    set_int_source (INT_LVD);
 }
 
 void update_sys_status ()

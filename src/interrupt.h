@@ -1,5 +1,7 @@
 #if !defined __INTERRUPT_H__
 #define __INTERRUPT_H__
+#include "config.h"
+#include "STC15W408AS.h"
 /**
  * Interruption vector layout
  * +----------------------------------+-----------+
@@ -66,8 +68,8 @@
 #define disable_int() EA = 0
 #define enable_int()  EA = 1
 
-#define enable_LVDP_int()  IE |= 0x40
-#define disable_LVDP_int() IE &= ~0x40
+#define enable_LVDP_int()       IE |= 0x40
+#define disable_LVDP_int()      IE &= ~0x40
 
 #define enable_ADC_int()   IE |= 0x20
 #define disable_ADC_int()  IE &= ~0x20 
@@ -91,6 +93,8 @@
  *  IDLE -- CPU will be shut down but peripheral OSCI still work if set
  *          and CPU will be waken up if interruption occurs
  **/
+#define clear_LVD_int_flag()    PCON &= ~0x20
+
 #define idle_cpu() PCON |= 0x01
 /**
  * IP(Interruption Priority) Register (Bit addressable)
@@ -164,6 +168,12 @@
  * ADC_START   -- 1: start ADC, 0: ADC finished.
  *
  **/
+#define is_ADC_over()           (g_sysstatus.ADC10bit & 0x8000)
+#define mark_ADC_over()         g_sysstatus.ADC10bit |= 0x8000
+#define clear_ADC_over()        g_sysstatus.ADC10bit &= ~0x8000
+
+#define select_ADC_port(index)  ADC_CONTR |= index & 7
+
 #define turn_on_ADC() ADC_CONTR |= 0x80
 #define turn_off_ADC() ADC_CONTR&= ~0x80
 #define clear_ADC_int_flag() ADC_CONTR &= ~0x10
@@ -261,5 +271,17 @@
  **/
 //Only use timer0 to work as timer
 #define init_timer() TMOD &= 0x01
+/**
+ * CLK_DIV(PCON2), Addr: 0x97
+ * +--------------------------------------------------------------------+
+ * | MCKO_S1 | MCKO_S0 | ADRJ | Tx_Rx | MCLKO_2 | CLKS2 | CLKS1 | CLKS0 |
+ * +--------------------------------------------------------------------+
+ *
+ **/
+//Underclocking/Down Freq
+#define underclocking(divisor_scale) CLK_DIV &= 0xF8 + ((divisor_scale) & 7)
+#define init_sys_freq()        underclocking (0)
+
+//
 extern void check_do (void);
 #endif
