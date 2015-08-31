@@ -16,6 +16,11 @@
 void EX0_ISR (void) interrupt 0 using 1
 {
     mark_status (mode, 1);
+
+    if (is_relay_on ()) turn_off_bulb ();
+    else turn_on_bulb ();
+    mark_status (e_relay, get_status (e_relay) ^ 1);
+
     set_int_source (INT_SWITCH);
 }
 
